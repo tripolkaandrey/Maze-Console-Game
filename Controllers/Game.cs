@@ -21,7 +21,6 @@ namespace Maze.Controllers
             Map.LoadMap(_player);
             Map.DrawMap();
             Thread Music = new Thread(new ThreadStart(this.Music));
-            Thread Timer = new Thread(new ThreadStart(this.Music));
             Music.Start();
 
             while (!GameOver)
