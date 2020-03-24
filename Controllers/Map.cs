@@ -5,9 +5,9 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 using Maze.Controllers;
-using Maze.unused;
+using Maze.Models;
 
-namespace Maze.Models
+namespace Maze.Controllers
 {
     class Map
     {
