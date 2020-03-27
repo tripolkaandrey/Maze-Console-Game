@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using Maze.Controllers;
@@ -12,13 +13,13 @@ namespace Maze.Controllers
     class Map
     {
         public char[,] MapChars;
-        public const char ExitChar = '%';
-        public byte MapNo = 1;
+        public static byte MapNo = 1;
         public string[] MapValues;
 
-        public string Path = @"..\..\maps\map"; //Убрать хардкод
+        public string Path = @"..\..\maps\map";
         public void LoadMap(Player player)
         {
+            if (MapNo > 2) return;
             var fileLoader = new StreamReader(Path + MapNo + ".map");
             MapValues = File.ReadAllLines(Path + MapNo + ".map");
             var height = MapValues.Length;
@@ -51,6 +52,10 @@ namespace Maze.Controllers
                         case Cash.IconEncrypted:
                             MapChars[row, coll] = Cash.Icon;
                             break;
+                        case Trap.IconEncrypted:
+                            MapChars[row, coll] = Trap.Icon;
+                            break;
+
                     }
                 }
             }
@@ -80,6 +85,9 @@ namespace Maze.Controllers
                             break;
                         case Exit.Icon:
                             Console.ForegroundColor = Exit.Color;
+                            break;
+                        case Trap.Icon:
+                            Console.ForegroundColor = Trap.Color;
                             break;
                     }
                     Console.Write(charToDraw);
@@ -120,23 +128,13 @@ namespace Maze.Controllers
                 case Cash.Icon:
                     Cash.Process(player);
                     break;
+                case Trap.Icon:
+                    Trap.Process(player);
+                    break;
                 case Exit.Icon:
                     MapNo++;
-                    //Exit.Process();
-                    if (MapNo > 2)
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Victory");
-                        Console.WriteLine("нажмите Enter,чтобы выйти");
-                        Game.GameOver = true;
-                        Console.ReadLine();
-                    }
-                    else
-                    {
-                        LoadMap(player);
-                        return;
-                    }
-                    break;
+                    LoadMap(player);
+                    return;
             }
             MapChars[cellY, cellX] = Player.Icon;
             player.Y = cellY;
