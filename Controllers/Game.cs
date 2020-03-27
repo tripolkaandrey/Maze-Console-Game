@@ -14,9 +14,9 @@ namespace Maze.Controllers
 
         public Game()
         {
-            this.Player = new Player();
-            this.Map = new Map();
-            this.Ui = new Ui();
+            Player = new Player();
+            Map = new Map();
+            Ui = new Ui();
         }
 
         public void Start()
