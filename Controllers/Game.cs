@@ -24,6 +24,8 @@ namespace Maze.Controllers
             Console.CursorVisible = false;
             Ui.Menu();
             Map.LoadMap(Player);
+            Thread music = new Thread(new ThreadStart(Ui.Music));
+            music.Start();
             while (!GameOver)
             {
                Map.DrawMap(Player);
@@ -58,5 +60,7 @@ namespace Maze.Controllers
             var keyInput = Console.ReadKey(true);
             Map.MovePlayer(keyInput, Player);
         }
+        
+
     }
 }

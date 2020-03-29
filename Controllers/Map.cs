@@ -65,7 +65,7 @@ namespace Maze.Controllers
         public void DrawMap(Player player)
         {
             Console.Clear();
-            const int radius = 3;
+            const int radius = 2;
             var radiusX = new int[2]{player.X - radius > 0 ? player.X - radius : 0,player.X + radius < MapChars.GetUpperBound(1) + 1 ? player.X + radius : MapChars.GetUpperBound(1) + 1 };
             var radiusY = new int[2] { player.Y - radius > 0 ? player.Y - radius : 0, player.Y + radius < MapChars.GetUpperBound(0) + 1 ? player.Y + radius : MapChars.GetUpperBound(0) + 1 };
             for (var row = radiusY[0]; row < radiusY[1]; row++)
