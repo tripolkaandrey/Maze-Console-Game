@@ -20,6 +20,7 @@ namespace Maze.Controllers
         public void LoadMap(Player player)
         {
             if (MapNo > 2) return;
+            Console.Clear();
             var fileLoader = new StreamReader(Path + MapNo + ".map");
             MapValues = File.ReadAllLines(Path + MapNo + ".map");
             var height = MapValues.Length;
@@ -61,11 +62,15 @@ namespace Maze.Controllers
             }
         }
 
-        public void DrawMap()
+        public void DrawMap(Player player)
         {
-            for (var row = 0; row < MapChars.GetUpperBound(0) + 1; row++)
+            Console.Clear();
+            const int radius = 3;
+            var radiusX = new int[2]{player.X - radius > 0 ? player.X - radius : 0,player.X + radius < MapChars.GetUpperBound(1) + 1 ? player.X + radius : MapChars.GetUpperBound(1) + 1 };
+            var radiusY = new int[2] { player.Y - radius > 0 ? player.Y - radius : 0, player.Y + radius < MapChars.GetUpperBound(0) + 1 ? player.Y + radius : MapChars.GetUpperBound(0) + 1 };
+            for (var row = radiusY[0]; row < radiusY[1]; row++)
             {
-                for (var coll = 0; coll < MapChars.GetUpperBound(1) + 1; coll++)
+                for (var coll = radiusX[0]; coll < radiusX[1]; coll++)
                 {
                     Console.SetCursorPosition(coll, 1 + row);
                     var charToDraw = MapChars[row, coll];
@@ -118,7 +123,7 @@ namespace Maze.Controllers
 
         private void ProcessMove(Player player, int cellX, int cellY)
         {
-            if (cellY > MapChars.GetUpperBound(0) || cellX > MapChars.GetUpperBound(1) || MapChars[cellY, cellX] == Wall.Icon  ) return;
+            if (cellY > MapChars.GetUpperBound(0) || cellY < 0 || cellX<0 || cellX > MapChars.GetUpperBound(1) || MapChars[cellY, cellX] == Wall.Icon) return;
             MapChars[player.Y, player.X] = ' ';
             switch (MapChars[cellY, cellX])
             {

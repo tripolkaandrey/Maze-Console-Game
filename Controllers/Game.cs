@@ -20,14 +20,13 @@ namespace Maze.Controllers
         }
 
         public void Start()
-        {
-            Console.Clear();
+        { 
             Console.CursorVisible = false;
             Ui.Menu();
             Map.LoadMap(Player);
             while (!GameOver)
             {
-               Map.DrawMap();
+               Map.DrawMap(Player);
                Ui.Gui(Player);
                GetInput();
                if (Player.Health < 0)
