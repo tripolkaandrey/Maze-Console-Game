@@ -24,7 +24,7 @@ namespace Maze.Controllers
             Console.CursorVisible = false;
             Ui.Menu();
             Map.LoadMap(Player);
-            Thread music = new Thread(new ThreadStart(Ui.Music));
+            var music = new Thread(new ThreadStart(Ui.Music));
             music.Start();
             while (!GameOver)
             {

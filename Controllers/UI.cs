@@ -28,15 +28,54 @@ namespace Maze.Controllers
             Console.Clear();
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("New Game(N)");
-            Console.WriteLine("Exit(E)");
-            if (Console.ReadKey(false).Key == ConsoleKey.N)
+            Console.WriteLine("Instructions(I)");
+            Console.WriteLine("Change Radius(R)");
+            Console.WriteLine("Exit(Esc)");
+            if (Console.ReadKey(true).Key == ConsoleKey.N)
             {
                 Console.Clear();
+            } else if(Console.ReadKey(true).Key == ConsoleKey.I)
+            {
+                Instructions();
+            } else if (Console.ReadKey(true).Key == ConsoleKey.R)
+            {
+               ChangeRadius();
             }
-            else
+            else if(Console.ReadKey(true).Key != ConsoleKey.Escape)
             {
                 Environment.Exit(1);
             }
+        }
+
+        public void Instructions()
+        {
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Instructions");
+                Console.WriteLine("Press escape to return to the menu");
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+            Menu();
+        }
+
+        public void ChangeRadius()
+        {
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Enter the radius you'd like to play with(from 1 to 3)");
+                var radius = Convert.ToByte(Console.ReadLine());//Add validation
+                if (radius > 0 && radius < 4)
+                {
+                    Map.Radius = radius;
+                    Console.WriteLine("Press escape to return to the menu");
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect input");
+                }
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+            Menu();
         }
         public void Music()
         {

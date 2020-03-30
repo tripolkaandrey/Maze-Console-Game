@@ -15,6 +15,7 @@ namespace Maze.Controllers
         public char[,] MapChars;
         public static byte MapNo = 1;
         public string[] MapValues;
+        public static byte Radius = 2;
 
         public string Path = @"..\..\maps\map";
         public void LoadMap(Player player)
@@ -65,9 +66,8 @@ namespace Maze.Controllers
         public void DrawMap(Player player)
         {
             Console.Clear();
-            const int radius = 3;
-            var radiusX = new int[2]{player.X - radius > 0 ? player.X - radius : 0,player.X + radius < MapChars.GetUpperBound(1) + 1 ? player.X + radius : MapChars.GetUpperBound(1) + 1 };
-            var radiusY = new int[2] { player.Y - radius > 0 ? player.Y - radius : 0, player.Y + radius < MapChars.GetUpperBound(0) + 1 ? player.Y + radius : MapChars.GetUpperBound(0) + 1 };
+            var radiusX = new int[2]{player.X - Radius > 0 ? player.X - Radius : 0,player.X + Radius < MapChars.GetUpperBound(1) + 1 ? player.X + Radius : MapChars.GetUpperBound(1) + 1 };
+            var radiusY = new int[2] { player.Y - Radius > 0 ? player.Y - Radius : 0, player.Y + Radius < MapChars.GetUpperBound(0) + 1 ? player.Y + Radius : MapChars.GetUpperBound(0) + 1 };
             for (var row = radiusY[0]; row < radiusY[1]; row++)
             {
                 for (var coll = radiusX[0]; coll < radiusX[1]; coll++)
