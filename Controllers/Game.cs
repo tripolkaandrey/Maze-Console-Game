@@ -35,7 +35,7 @@ namespace Maze.Controllers
                {
                    Over(false);
                }
-               if (Map.MapNo > 6)
+               if (Map.MapNo > Map.AmountOfMaps)
                {
                    Over(true);
                }

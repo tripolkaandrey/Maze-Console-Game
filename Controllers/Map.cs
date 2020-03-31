@@ -16,11 +16,12 @@ namespace Maze.Controllers
         public static byte MapNo = 1;
         public string[] MapValues;
         public static byte Radius = 2;
+        public static byte AmountOfMaps = 7;
 
         public string Path = @"..\..\maps\map";
         public void LoadMap(Player player)
         {
-            if (MapNo > 6) return;
+            if (MapNo > AmountOfMaps) return;
             Console.Clear();
             var fileLoader = new StreamReader(Path + MapNo + ".map");
             MapValues = File.ReadAllLines(Path + MapNo + ".map");
