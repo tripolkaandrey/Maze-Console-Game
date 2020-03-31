@@ -59,6 +59,10 @@
     <None Include="App.config" />
     <None Include="maps\map1.map" />
     <None Include="maps\map2.map" />
+    <None Include="maps\map6.map" />
+    <None Include="maps\map5.map" />
+    <None Include="maps\map4.map" />
+    <None Include="maps\map3.map" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

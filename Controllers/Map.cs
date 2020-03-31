@@ -20,7 +20,7 @@ namespace Maze.Controllers
         public string Path = @"..\..\maps\map";
         public void LoadMap(Player player)
         {
-            if (MapNo > 2) return;
+            if (MapNo > 6) return;
             Console.Clear();
             var fileLoader = new StreamReader(Path + MapNo + ".map");
             MapValues = File.ReadAllLines(Path + MapNo + ".map");

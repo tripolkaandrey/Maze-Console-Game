@@ -26,7 +26,7 @@ namespace Maze.Controllers
             Map.LoadMap(Player);
             var music = new Thread(new ThreadStart(Ui.Music));
             music.Start();
-            while (!GameOver)
+            while (!GameOver || Console.ReadKey().Key != ConsoleKey.Escape)
             {
                Map.DrawMap(Player);
                Ui.Gui(Player);
@@ -35,7 +35,7 @@ namespace Maze.Controllers
                {
                    Over(false);
                }
-               if (Map.MapNo > 2)
+               if (Map.MapNo > 6)
                {
                    Over(true);
                }
@@ -47,7 +47,7 @@ namespace Maze.Controllers
             Console.Clear();
             Console.WriteLine(victory ? "Victory" : "GAME OVER");
             Console.WriteLine("Press enter to open menu");
-            Console.ReadLine();
+            Console.ReadKey(true);
             Map.MapNo = 1;
             Player.Score = 0;
             Player.Health = 0;
