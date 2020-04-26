@@ -24,28 +24,41 @@ namespace Maze.Controllers
             Console.CursorVisible = false;
             Ui.Menu();
             Map.LoadMap(Player);
-            var music = new Thread(new ThreadStart(Ui.Music));
-            music.Start();
+            var state = new State();
+            var state2 = new State();
+            var win = false;
+            var music = new Thread(new ParameterizedThreadStart(Ui.Music));
+            var timer = new Thread(new ParameterizedThreadStart(Ui.Timer));
+            music.Start(state);
+            timer.Start(state2);
             while (!GameOver || Console.ReadKey().Key != ConsoleKey.Escape)
             {
-               Map.DrawMap(Player);
-               Ui.Gui(Player);
-               GetInput();
-               if (Player.Health < 0)
-               {
-                   Over(false);
-               }
-               if (Map.MapNo > Map.AmountOfMaps)
-               {
-                   Over(true);
-               }
+                Map.DrawMap(Player);
+                Ui.Gui(Player);
+                GetInput();
+                if (Player.Health < 0)
+                {
+                    break;
+                }
+
+                if (Map.MapNo > Map.AmountOfMaps)
+                {
+                    win = true;
+                    break;
+                }
             }
-            
+
+            state.Cancel = true;
+            state2.Cancel = true;
+            music.Join();
+            Over(win);
         }
         public void Over(bool victory)
         {
             Console.Clear();
-            Console.WriteLine(victory ? "Victory" : "GAME OVER");
+            Console.ForegroundColor = victory ? ConsoleColor.White : ConsoleColor.Red;
+            Console.WriteLine(victory ? "VICTORY" : "GAME OVER");
+            Console.WriteLine("Your score: {0}",Player.Score);
             Console.WriteLine("Press enter to open menu");
             Console.ReadKey(true);
             Map.MapNo = 1;
@@ -60,7 +73,6 @@ namespace Maze.Controllers
             var keyInput = Console.ReadKey(true);
             Map.MovePlayer(keyInput, Player);
         }
-        
 
     }
 }

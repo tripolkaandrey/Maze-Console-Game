@@ -8,6 +8,7 @@ namespace Maze.Models
         public const char Icon = 'o';
         public const char IconEncrypted = 'P';
         public const ConsoleColor Color = ConsoleColor.Yellow;
+        public int Cash = 0;
         public int Score = 0;
         public int Health = 0;
         public int X;

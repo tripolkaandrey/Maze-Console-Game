@@ -14,6 +14,7 @@ namespace Maze.Models
 
         public static void Process(Player player)
         {
+            player.Cash += 1;
             player.Score += 10;
             /*
             Console.Beep(2000, 50);
