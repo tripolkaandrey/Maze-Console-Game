@@ -14,6 +14,7 @@ namespace Maze.Controllers
         public bool Cancel;
 
     }
+
     class Ui
     {
         public int Time = 0;
@@ -32,8 +33,8 @@ namespace Maze.Controllers
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(34, 0);
             Console.Write("{0}XP", player.Score);
-            Console.SetCursorPosition(48, 0);
-            Console.Write(Time);
+            //Console.SetCursorPosition(48, 0);
+            //Console.Write(Time);
 
         }
 
@@ -109,7 +110,7 @@ namespace Maze.Controllers
 
         public void Music(object o)
         {
-            var state = (State)o;
+            var state = (State) o;
             while (!state.Cancel)
             {
                 Console.Beep(784, 150);
@@ -161,15 +162,16 @@ namespace Maze.Controllers
             }
         }
 
-        public void Timer(object o)
-        {
-            var state = (State)o;
-            Time = 0;
-            while (!state.Cancel)
-            {
-                Time++;
-                Thread.Sleep(1000);
-            }
-        }
+        /* public void Timer(object o)
+         {
+             var state = (State)o;
+             Time = 0;
+             while (!state.Cancel)
+             {
+                 Time++;
+                 Thread.Sleep(1000);
+             }
+         }
+     */
     }
 }

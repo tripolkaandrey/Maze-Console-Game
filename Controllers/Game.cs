@@ -21,16 +21,17 @@ namespace Maze.Controllers
 
         public void Start()
         { 
+            Console.SetBufferSize(120,35);
             Console.CursorVisible = false;
             Ui.Menu();
             Map.LoadMap(Player);
             var state = new State();
-            var state2 = new State();
+            //var state2 = new State();
             var win = false;
             var music = new Thread(new ParameterizedThreadStart(Ui.Music));
-            var timer = new Thread(new ParameterizedThreadStart(Ui.Timer));
+            //var timer = new Thread(new ParameterizedThreadStart(Ui.Timer));
             music.Start(state);
-            timer.Start(state2);
+            //timer.Start(state2);
             while (!GameOver || Console.ReadKey().Key != ConsoleKey.Escape)
             {
                 Map.DrawMap(Player);
@@ -49,7 +50,7 @@ namespace Maze.Controllers
             }
 
             state.Cancel = true;
-            state2.Cancel = true;
+            //state2.Cancel = true;
             music.Join();
             Over(win);
         }

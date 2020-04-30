@@ -11,16 +11,5 @@ namespace Maze.Models
         public const char Icon = '%';
         public const char IconEncrypted = 'F';
         public const ConsoleColor Color = ConsoleColor.DarkYellow;
-        /*
-        public static void Process()
-        {
-            Console.Beep(3000, 50);
-            Console.Beep(2500, 50);
-            Console.Beep(3000, 50);
-            Console.Beep(2000, 50);
-            Console.Beep(3000, 50);
-            Console.Beep(1500, 50);
-        }
-        */
     }
 }

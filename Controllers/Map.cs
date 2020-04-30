@@ -18,7 +18,7 @@ namespace Maze.Controllers
         public static byte Radius = 2;
         public static byte AmountOfMaps = 7;
 
-        public string Path = @"..\..\maps\map";
+        private string Path = @"..\..\maps\map";
         public void LoadMap(Player player)
         {
             if (MapNo > AmountOfMaps) return;
