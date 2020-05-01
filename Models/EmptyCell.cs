@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Maze.Models
 {
-    class Cash : GameObject
+    class EmptyCell:GameObject
     {
-        public Cash(char icon, ConsoleColor color) : base(icon, color)
+        public EmptyCell(char icon, ConsoleColor color) : base(icon, color)
         {
         }
     }

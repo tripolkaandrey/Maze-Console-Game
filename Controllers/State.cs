@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maze.Models
+namespace Maze.Controllers
 {
-    class Cash : GameObject
+    class State
     {
-        public Cash(char icon, ConsoleColor color) : base(icon, color)
+        public bool IsAlive { get; set; }
+
+        public State()
         {
+            IsAlive = true;
         }
     }
 }

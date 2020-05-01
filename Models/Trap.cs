@@ -7,16 +7,10 @@ using Maze.Controllers;
 
 namespace Maze.Models
 {
-    struct Trap
+    class Trap:GameObject
     {
-        public const char Icon = 'T';
-        public const char IconEncrypted = 'T';
-        public const ConsoleColor Color = ConsoleColor.DarkBlue;
-
-
-        public static void Process(Player player)
+        public Trap(char icon, ConsoleColor color) : base(icon, color)
         {
-            player.Health--;
         }
     }
 }

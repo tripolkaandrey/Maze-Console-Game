@@ -12,140 +12,133 @@ namespace Maze.Controllers
 {
     class Map
     {
-        public char[,] MapChars;
-        public static byte MapNo = 1;
-        public string[] MapValues;
-        public static byte Radius = 2;
-        public static byte AmountOfMaps = 7;
+        private GameObject[,] GameMap;
+        private string[] MapValues;
+        private Player player;
+        public byte AmountOfMaps = 7;
 
         private string Path = @"..\..\maps\map";
-        public void LoadMap(Player player)
+
+        public Map(Player player)
         {
-            if (MapNo > AmountOfMaps) return;
+            this.player = player;
+        }
+        public void LoadMap()
+        {
+            if (player.MapNo > AmountOfMaps) return;
             Console.Clear();
-            var fileLoader = new StreamReader(Path + MapNo + ".map");
-            MapValues = File.ReadAllLines(Path + MapNo + ".map");
+            var fileLoader = new StreamReader(Path + player.MapNo + ".map");
+            MapValues = File.ReadAllLines(Path + player.MapNo + ".map");
             var height = MapValues.Length;
             var length = fileLoader.ReadLine().Length;
-            MapChars = new char[height, length];
+            GameMap = new GameObject[height, length];
 
 
-            for (var row = 0; row < MapChars.GetUpperBound(0) + 1; row++)
+            for (var row = 0; row <= GameMap.GetUpperBound(0); row++)
             {
-                for (var coll = 0; coll < MapChars.GetUpperBound(1) + 1; coll++)
+                for (var coll = 0; coll <= GameMap.GetUpperBound(1); coll++)
                 {
                     var current = MapValues[row][coll];
                     switch (current)
                     {
                         //Chain of responsibilities?
-                        case Wall.IconEncrypted:
-                            MapChars[row, coll] = Wall.Icon;
+                        case '1':
+                            GameMap[row, coll] = new Wall('#',ConsoleColor.Cyan);
                             break;
-                        case Player.IconEncrypted:
-                            MapChars[row, coll] = Player.Icon;
+                        case 'P':
+                            GameMap[row, coll] = player;
                             player.X = coll;
                             player.Y = row;
                             break;
-                        case Exit.IconEncrypted:
-                            MapChars[row, coll] = Exit.Icon;
+                        case 'F':
+                            GameMap[row, coll] = new Exit('%',ConsoleColor.DarkYellow);
                             break;
-                        case Life.IconEncrypted:
-                            MapChars[row, coll] = Life.Icon;
+                        case 'H':
+                            GameMap[row,coll] = new Life('H',ConsoleColor.Red);
                             break;
-                        case Cash.IconEncrypted:
-                            MapChars[row, coll] = Cash.Icon;
+                        case 'C':
+                            GameMap[row, coll] = new Cash('$',ConsoleColor.DarkGreen);
                             break;
-                        case Trap.IconEncrypted:
-                            MapChars[row, coll] = Trap.Icon;
+                        case 'T':
+                            GameMap[row, coll] = new Trap('T',ConsoleColor.DarkBlue);
                             break;
-
+                        case '0':
+                            GameMap[row,coll] = new EmptyCell(' ',ConsoleColor.Black);
+                            break;
                     }
                 }
             }
         }
-
-        public void DrawMap(Player player)
+        public void DrawMap()
         {
             Console.Clear();
-            var radiusX = new int[2]{player.X - Radius > 0 ? player.X - Radius : 0,player.X + Radius < MapChars.GetUpperBound(1) + 1 ? player.X + Radius : MapChars.GetUpperBound(1) + 1 };
-            var radiusY = new int[2] { player.Y - Radius > 0 ? player.Y - Radius : 0, player.Y + Radius < MapChars.GetUpperBound(0) + 1 ? player.Y + Radius : MapChars.GetUpperBound(0) + 1 };
+            var radiusX = new int[2]{player.X - player.Radius > 0 ? player.X - player.Radius : 0,player.X + player.Radius < GameMap.GetUpperBound(1) + 1 ? player.X + player.Radius : GameMap.GetUpperBound(1) + 1 };
+            var radiusY = new int[2] { player.Y - player.Radius > 0 ? player.Y - player.Radius : 0, player.Y + player.Radius < GameMap.GetUpperBound(0) + 1 ? player.Y + player.Radius : GameMap.GetUpperBound(0) + 1 };
             for (var row = radiusY[0]; row < radiusY[1]; row++)
             {
                 for (var coll = radiusX[0]; coll < radiusX[1]; coll++)
                 {
                     Console.SetCursorPosition(coll, 1 + row);
-                    var charToDraw = MapChars[row, coll];
-                    switch (charToDraw)
+                    var objectToDraw = GameMap[row, coll];
+                    switch (objectToDraw)
                     {
-                        case Wall.Icon:
-                            Console.ForegroundColor = Wall.Color;
+                        case Wall wall:
+                            Console.ForegroundColor = wall.Color;
+                            Console.Write(wall.Icon);
                             break;
-                        case Player.Icon:
-                            Console.ForegroundColor = Player.Color;
+                        case Player p:
+                            Console.ForegroundColor = player.Color;
                             break;
-                        case Cash.Icon:
-                            Console.ForegroundColor = Cash.Color;
+                        case Cash cash:
+                            Console.ForegroundColor = cash.Color;
                             break;
-                        case Life.Icon:
-                            Console.ForegroundColor = Life.Color;
+                        case Life life:
+                            Console.ForegroundColor = life.Color;
                             break;
-                        case Exit.Icon:
-                            Console.ForegroundColor = Exit.Color;
+                        case Exit exit:
+                            Console.ForegroundColor = exit.Color;
                             break;
-                        case Trap.Icon:
-                            Console.ForegroundColor = Trap.Color;
+                        case Trap trap:
+                            Console.ForegroundColor = trap.Color;
                             break;
                     }
-                    Console.Write(charToDraw);
+                    Console.Write(objectToDraw.Icon);
                 }
-
                 Console.WriteLine();
             }
         }
-
-        public void MovePlayer(ConsoleKeyInfo arrow,Player player)
+        public void MovePlayer(ConsoleKeyInfo arrow)
         {
             switch (arrow.Key)
             {
                 case ConsoleKey.UpArrow:
-                    ProcessMove(player,player.X,player.Y - 1);
+                    ProcessMove(player.X,player.Y - 1);
                     break;
                 case ConsoleKey.DownArrow:
-                    ProcessMove(player,player.X,player.Y + 1);
+                    ProcessMove(player.X,player.Y + 1);
                     break;
                 case ConsoleKey.LeftArrow:
-                    ProcessMove(player,player.X - 1,player.Y);
+                    ProcessMove(player.X - 1,player.Y);
                     break;
                 case ConsoleKey.RightArrow:
-                    ProcessMove(player,player.X + 1,player.Y);
+                    ProcessMove(player.X + 1,player.Y);
                     break;
             }
         }
-
-        private void ProcessMove(Player player, int cellX, int cellY)
+        private void ProcessMove(int cellX, int cellY)
         {
-            if (cellY > MapChars.GetUpperBound(0) || cellY < 0 || cellX<0 || cellX > MapChars.GetUpperBound(1) || MapChars[cellY, cellX] == Wall.Icon) return;
-            MapChars[player.Y, player.X] = ' ';
-            switch (MapChars[cellY, cellX])
+            if (cellY > GameMap.GetUpperBound(0) || cellY < 0 || cellX<0 || cellX > GameMap.GetUpperBound(1) || GameMap[cellY, cellX].Icon == '#') return;
+            if (GameMap[cellY, cellX].Icon == '%')
             {
-                case Life.Icon:
-                    Life.Process(player);
-                    break;
-                case Cash.Icon:
-                    Cash.Process(player);
-                    break;
-                case Trap.Icon:
-                    Trap.Process(player);
-                    break;
-                case Exit.Icon:
-                    MapNo++;
-                    LoadMap(player);
-                    return;
+                player.Process(GameMap[cellY, cellX]);
+                LoadMap();
+                return;
             }
-            MapChars[cellY, cellX] = Player.Icon;
+            GameMap[player.Y,player.X] = new EmptyCell(' ',ConsoleColor.Black);
+            player.Process(GameMap[cellY, cellX]);
+            GameMap[cellY, cellX] = player;
             player.Y = cellY;
             player.X = cellX;
         }
-
     }
 }

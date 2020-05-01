@@ -10,69 +10,58 @@ namespace Maze.Controllers
         public Player Player;
         public static bool GameOver = false;
         public Map Map;
-        public Ui Ui;
+        public GraphicalUserInterface GUI;
+        public Timer Timer;
+
 
         public Game()
         {
-            Player = new Player();
-            Map = new Map();
-            Ui = new Ui();
+            Player = new Player('o',ConsoleColor.Yellow,2);
+            GUI = new GraphicalUserInterface(this,Player);
+            Map = new Map(Player);
+            Timer = new Timer();
         }
-
         public void Start()
-        { 
-            Console.SetBufferSize(120,35);
+        {
+            Console.SetBufferSize(120, 35);
             Console.CursorVisible = false;
-            Ui.Menu();
-            Map.LoadMap(Player);
-            var state = new State();
-            //var state2 = new State();
-            var win = false;
-            var music = new Thread(new ParameterizedThreadStart(Ui.Music));
-            //var timer = new Thread(new ParameterizedThreadStart(Ui.Timer));
-            music.Start(state);
-            //timer.Start(state2);
+            GUI.Menu();
+        }
+        public void Play()
+        {
+            var timer = new Thread(new ThreadStart(Timer.Start));
+            Map.LoadMap();
+            timer.Start();
             while (!GameOver || Console.ReadKey().Key != ConsoleKey.Escape)
             {
-                Map.DrawMap(Player);
-                Ui.Gui(Player);
+                Map.DrawMap();
+                GUI.PlayerInfo();
                 GetInput();
-                if (Player.Health < 0)
+                if (CheckGameOver())
                 {
-                    break;
-                }
-
-                if (Map.MapNo > Map.AmountOfMaps)
-                {
-                    win = true;
                     break;
                 }
             }
+            if(Player.Health <= 0)
+            {
+                GUI.GameOver(false);
+            } else if(Player.MapNo > Map.AmountOfMaps)
+            {
+                GUI.GameOver(true);
+            }
 
-            state.Cancel = true;
-            //state2.Cancel = true;
-            music.Join();
-            Over(win);
+            Timer.State.IsAlive = false;
+            timer.Join();
         }
-        public void Over(bool victory)
-        {
-            Console.Clear();
-            Console.ForegroundColor = victory ? ConsoleColor.White : ConsoleColor.Red;
-            Console.WriteLine(victory ? "VICTORY" : "GAME OVER");
-            Console.WriteLine("Your score: {0}",Player.Score);
-            Console.WriteLine("Press enter to open menu");
-            Console.ReadKey(true);
-            Map.MapNo = 1;
-            Player.Score = 0;
-            Player.Health = 0;
-            Start();
-        }
-
-
         public void GetInput()
         {
             var keyInput = Console.ReadKey(true);
-            Map.MovePlayer(keyInput, Player);
+            Map.MovePlayer(keyInput);
+        }
+
+        public bool CheckGameOver()
+        {
+            return Player.Health <= 0 || Player.MapNo > Map.AmountOfMaps;
         }
 
     }

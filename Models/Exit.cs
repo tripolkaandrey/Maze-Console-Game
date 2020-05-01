@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Maze.Models
 {
-    struct Exit
+    class Exit : GameObject
     {
-        public const char Icon = '%';
-        public const char IconEncrypted = 'F';
-        public const ConsoleColor Color = ConsoleColor.DarkYellow;
+        public Exit(char icon, ConsoleColor color) : base(icon, color)
+        {
+        }
+
     }
 }

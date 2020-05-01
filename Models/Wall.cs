@@ -6,18 +6,11 @@ using System.Threading.Tasks;
 
 namespace Maze.Models
 {
-    struct Wall
+    class Wall:GameObject
     {
-        public const char Icon = '#';
-        public const char IconEncrypted = '1';
-        //public bool IsBreakable { get; set; }
-        public const ConsoleColor Color = ConsoleColor.Cyan;
-
-        /*public Wall(bool isBreakable)
+        public Wall(char icon, ConsoleColor color) : base(icon, color)
         {
-            this.IsBreakable = isBreakable;
-            this.Color = IsBreakable ? ConsoleColor.Gray : ConsoleColor.White;
         }
-        */
+
     }
 }
