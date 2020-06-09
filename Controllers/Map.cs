@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,97 +13,71 @@ namespace Maze.Controllers
 {
     class Map
     {
-        private GameObject[,] GameMap;
-        private string[] MapValues;
-        private Player player;
-        public byte AmountOfMaps = 7;
-
-        private string Path = @"..\..\maps\map";
-
-        public Map(Player player)
+        private GameObject[,] _gameMap;
+        private string[] _mapValues;
+        private readonly Player _player;
+        private readonly byte _amountOfMaps;
+        private readonly string _path;
+        private Dictionary<char,string> _icons = new Dictionary<char, string>
         {
-            this.player = player;
+            {'#',"Wall"},
+            {'T',"Trap"},
+            {'o',"Player"},
+            {'$',"Cash"},
+            {'H',"Life"},
+            {'%',"Exit"},
+            {' ',"EmptyCell"}
+        };
+
+        public Map(Player player, GameInfo gameInfo)
+        {
+            _player = player;
+            _amountOfMaps = gameInfo.AmountOfMaps;
+            _path = gameInfo.Path;
         }
         public void LoadMap()
         {
-            if (player.MapNo > AmountOfMaps) return;
-            Console.Clear();
-            var fileLoader = new StreamReader(Path + player.MapNo + ".map");
-            MapValues = File.ReadAllLines(Path + player.MapNo + ".map");
-            var height = MapValues.Length;
-            var length = fileLoader.ReadLine().Length;
-            GameMap = new GameObject[height, length];
+            InitializeGameMap();
 
-
-            for (var row = 0; row <= GameMap.GetUpperBound(0); row++)
+            for (int row = 0; row <= _gameMap.GetUpperBound(0); row++)
             {
-                for (var coll = 0; coll <= GameMap.GetUpperBound(1); coll++)
+                for (int coll = 0; coll <= _gameMap.GetUpperBound(1); coll++)
                 {
-                    var current = MapValues[row][coll];
-                    switch (current)
-                    {
-                        //Chain of responsibilities?
-                        case '1':
-                            GameMap[row, coll] = new Wall('#',ConsoleColor.Cyan);
-                            break;
-                        case 'P':
-                            GameMap[row, coll] = player;
-                            player.X = coll;
-                            player.Y = row;
-                            break;
-                        case 'F':
-                            GameMap[row, coll] = new Exit('%',ConsoleColor.DarkYellow);
-                            break;
-                        case 'H':
-                            GameMap[row,coll] = new Life('H',ConsoleColor.Red);
-                            break;
-                        case 'C':
-                            GameMap[row, coll] = new Cash('$',ConsoleColor.DarkGreen);
-                            break;
-                        case 'T':
-                            GameMap[row, coll] = new Trap('T',ConsoleColor.DarkBlue);
-                            break;
-                        case '0':
-                            GameMap[row,coll] = new EmptyCell(' ',ConsoleColor.Black);
-                            break;
-                    }
+                    LoadElement(row, coll);
                 }
             }
         }
+
+        private void LoadElement(int row, int coll)
+        {
+            var current = _icons[_mapValues[row][coll]];
+            if (current == "Player")
+            {
+                _gameMap[row, coll] = _player;
+                _player.X = coll;
+                _player.Y = row;
+            }
+            else
+            {
+                Type type = Type.GetType("Maze.Models." + current);
+                _gameMap[row, coll] = (GameObject) Activator.CreateInstance(type);
+            }
+        }
+
         public void DrawMap()
         {
             Console.Clear();
-            var radiusX = new int[2]{player.X - player.Radius > 0 ? player.X - player.Radius : 0,player.X + player.Radius < GameMap.GetUpperBound(1) + 1 ? player.X + player.Radius : GameMap.GetUpperBound(1) + 1 };
-            var radiusY = new int[2] { player.Y - player.Radius > 0 ? player.Y - player.Radius : 0, player.Y + player.Radius < GameMap.GetUpperBound(0) + 1 ? player.Y + player.Radius : GameMap.GetUpperBound(0) + 1 };
-            for (var row = radiusY[0]; row < radiusY[1]; row++)
+            var radius = GetRadius();
+
+            for (int row = radius.Y[0]; row < radius.Y[1]; row++)
             {
-                for (var coll = radiusX[0]; coll < radiusX[1]; coll++)
+                for (int coll = radius.X[0]; coll < radius.X[1]; coll++)
                 {
+                    var gameObject = _gameMap[row, coll];
+
                     Console.SetCursorPosition(coll, 1 + row);
-                    var objectToDraw = GameMap[row, coll];
-                    switch (objectToDraw)
-                    {
-                        case Wall wall:
-                            Console.ForegroundColor = wall.Color;
-                            Console.Write(wall.Icon);
-                            break;
-                        case Player p:
-                            Console.ForegroundColor = player.Color;
-                            break;
-                        case Cash cash:
-                            Console.ForegroundColor = cash.Color;
-                            break;
-                        case Life life:
-                            Console.ForegroundColor = life.Color;
-                            break;
-                        case Exit exit:
-                            Console.ForegroundColor = exit.Color;
-                            break;
-                        case Trap trap:
-                            Console.ForegroundColor = trap.Color;
-                            break;
-                    }
-                    Console.Write(objectToDraw.Icon);
+                    Console.ForegroundColor = gameObject.Color;
+                    Console.Write(gameObject.Icon);
                 }
                 Console.WriteLine();
             }
@@ -112,33 +87,72 @@ namespace Maze.Controllers
             switch (arrow.Key)
             {
                 case ConsoleKey.UpArrow:
-                    ProcessMove(player.X,player.Y - 1);
+                    ProcessMove(_player.X,_player.Y - 1);
                     break;
                 case ConsoleKey.DownArrow:
-                    ProcessMove(player.X,player.Y + 1);
+                    ProcessMove(_player.X,_player.Y + 1);
                     break;
                 case ConsoleKey.LeftArrow:
-                    ProcessMove(player.X - 1,player.Y);
+                    ProcessMove(_player.X - 1,_player.Y);
                     break;
                 case ConsoleKey.RightArrow:
-                    ProcessMove(player.X + 1,player.Y);
+                    ProcessMove(_player.X + 1,_player.Y);
                     break;
             }
         }
         private void ProcessMove(int cellX, int cellY)
         {
-            if (cellY > GameMap.GetUpperBound(0) || cellY < 0 || cellX<0 || cellX > GameMap.GetUpperBound(1) || GameMap[cellY, cellX].Icon == '#') return;
-            if (GameMap[cellY, cellX].Icon == '%')
+            if (cellY > _gameMap.GetUpperBound(0) ||
+                cellY < 0 ||
+                cellX < 0 ||
+                cellX > _gameMap.GetUpperBound(1) ||
+                _gameMap[cellY, cellX] is Wall) return;
+
+            _gameMap[cellY, cellX].Process(_player);
+
+            if (_gameMap[cellY, cellX] is Exit)
             {
-                player.Process(GameMap[cellY, cellX]);
                 LoadMap();
                 return;
             }
-            GameMap[player.Y,player.X] = new EmptyCell(' ',ConsoleColor.Black);
-            player.Process(GameMap[cellY, cellX]);
-            GameMap[cellY, cellX] = player;
-            player.Y = cellY;
-            player.X = cellX;
+
+            _gameMap[_player.Y,_player.X] = new EmptyCell();
+            _gameMap[cellY, cellX] = _player;
+            _player.Y = cellY;
+            _player.X = cellX;
+        }
+
+        public bool IsGameFinished()
+        {
+            return _player.MapNo > _amountOfMaps;
+        }
+        private void InitializeGameMap()
+        {
+            var fileLoader = new StreamReader(_path + _player.MapNo + ".map");
+            _mapValues = File.ReadAllLines(_path + _player.MapNo + ".map");
+            var height = _mapValues.Length;
+            var length = fileLoader.ReadLine().Length;
+            _gameMap = new GameObject[height, length];
+        }
+        private GetRadiusResult GetRadius()//Change
+        {
+            var radiusX = new int[2]
+            {
+                _player.X - _player.Radius > 0 ? _player.X - _player.Radius : 0,
+                _player.X + _player.Radius < _gameMap.GetUpperBound(1) + 1
+                    ? _player.X + _player.Radius
+                    : _gameMap.GetUpperBound(1) + 1
+            };
+
+            var radiusY = new int[2]
+            {
+                _player.Y - _player.Radius > 0 ? _player.Y - _player.Radius : 0,
+                _player.Y + _player.Radius < _gameMap.GetUpperBound(0) + 1
+                    ? _player.Y + _player.Radius
+                    : _gameMap.GetUpperBound(0) + 1
+            };
+
+            return new GetRadiusResult(radiusX, radiusY);
         }
     }
 }

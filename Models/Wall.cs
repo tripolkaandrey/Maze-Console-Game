@@ -8,9 +8,11 @@ namespace Maze.Models
 {
     class Wall:GameObject
     {
-        public Wall(char icon, ConsoleColor color) : base(icon, color)
+        public override char Icon { get; set; } = '#';
+        public override ConsoleColor Color { get; set; } = ConsoleColor.Cyan;
+        public override void Process(Player player)
         {
-        }
 
+        }
     }
 }

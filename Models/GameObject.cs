@@ -3,16 +3,9 @@
 namespace Maze.Models
 {
     public abstract class GameObject
-    { 
-
-        public virtual char Icon { get; }
-        public virtual ConsoleColor Color { get; }
-
-        protected GameObject(char icon, ConsoleColor color)
-        {
-            Icon = icon;
-            Color = color;
-        }
-
+    {
+        public virtual char Icon { get; set; }
+        public virtual ConsoleColor Color { get; set; }
+        public abstract void Process(Player player);
     }
 }

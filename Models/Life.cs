@@ -8,8 +8,11 @@ namespace Maze.Models
 {
     class Life:GameObject
     {
-        public Life(char icon, ConsoleColor color) : base(icon, color)
+        public override char Icon { get; set; } = 'H';
+        public override ConsoleColor Color { get; set; } = ConsoleColor.DarkRed;
+        public override void Process(Player player)
         {
+            player.Health++;
         }
     }
 }

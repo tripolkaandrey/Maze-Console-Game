@@ -8,9 +8,11 @@ namespace Maze.Models
 {
     class Exit : GameObject
     {
-        public Exit(char icon, ConsoleColor color) : base(icon, color)
+        public override char Icon { get; set; } = '%';
+        public override ConsoleColor Color { get; set; } = ConsoleColor.DarkYellow;
+        public override void Process(Player player)
         {
+            player.MapNo++;
         }
-
     }
 }

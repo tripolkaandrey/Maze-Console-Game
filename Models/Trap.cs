@@ -9,8 +9,19 @@ namespace Maze.Models
 {
     class Trap:GameObject
     {
-        public Trap(char icon, ConsoleColor color) : base(icon, color)
+        public override char Icon { get; set; } = 'T';
+        public override ConsoleColor Color { get; set; } = ConsoleColor.DarkBlue;
+        public override void Process(Player player)
         {
+            player.Health--;
+            if (player.Score > 5)
+            {
+                player.Score -= 5;
+            }
+            else
+            {
+                player.Score = 0;
+            }
         }
     }
 }

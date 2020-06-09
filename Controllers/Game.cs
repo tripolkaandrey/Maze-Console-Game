@@ -1,67 +1,80 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Threading;
 using Maze.Models;
+using Newtonsoft.Json;
 
 namespace Maze.Controllers
 {
     class Game
     {
-        public Player Player;
-        public static bool GameOver = false;
-        public Map Map;
-        public GraphicalUserInterface GUI;
-        public Timer Timer;
-
+        public Player Player { get; }
+        public Timer Timer { get; }
+        private readonly Map _map;
+        private readonly GraphicalUserInterface _gui;
+        private bool _gameOver;
 
         public Game()
         {
-            Player = new Player('o',ConsoleColor.Yellow,2);
-            GUI = new GraphicalUserInterface(this,Player);
-            Map = new Map(Player);
+            Player = new Player();
+            _gui = new GraphicalUserInterface(this);
+            var json = File.ReadAllText("../../GameInfo.json");
+            var gameInfo = JsonConvert.DeserializeObject<GameInfo>(json);
+            _map = new Map(Player,gameInfo);
             Timer = new Timer();
         }
         public void Start()
         {
             Console.SetBufferSize(120, 35);
             Console.CursorVisible = false;
-            GUI.Menu();
+            _gui.Menu();
         }
         public void Play()
         {
-            var timer = new Thread(new ThreadStart(Timer.Start));
-            Map.LoadMap();
+            var win = false;
+            var timer = new Thread(Timer.Start);
+            _map.LoadMap();
             timer.Start();
-            while (!GameOver || Console.ReadKey().Key != ConsoleKey.Escape)
+
+            while (!_gameOver)
             {
-                Map.DrawMap();
-                GUI.PlayerInfo();
+                _map.DrawMap();
+                _gui.PlayerInfo();
                 GetInput();
-                if (CheckGameOver())
+                if (CheckGameOver(ref win))
                 {
-                    break;
+                    _gameOver = true;
                 }
             }
-            if(Player.Health <= 0)
-            {
-                GUI.GameOver(false);
-            } else if(Player.MapNo > Map.AmountOfMaps)
-            {
-                GUI.GameOver(true);
-            }
-
-            Timer.State.IsAlive = false;
-            timer.Join();
+            timer.Abort();
+            _gui.GameOver(win);
         }
         public void GetInput()
         {
             var keyInput = Console.ReadKey(true);
-            Map.MovePlayer(keyInput);
+            if (keyInput.Key == ConsoleKey.Escape)
+            {
+                _gameOver = true;
+            }
+            _map.MovePlayer(keyInput);
         }
 
-        public bool CheckGameOver()
+        public bool CheckGameOver(ref bool win)
         {
-            return Player.Health <= 0 || Player.MapNo > Map.AmountOfMaps;
+            if (_map.IsGameFinished())
+            {
+                win = true;
+                return true;
+            }
+
+            if (Player.Health <= 0)
+            {
+                win = false;
+                return true;
+            }
+
+            return false;
         }
 
     }

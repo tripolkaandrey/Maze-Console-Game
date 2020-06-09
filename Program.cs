@@ -8,10 +8,8 @@ using Maze.Controllers;
 using Maze.Models;
 
 namespace Maze
-
-
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

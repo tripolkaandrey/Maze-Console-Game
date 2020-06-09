@@ -8,8 +8,12 @@ namespace Maze.Models
 {
     class Cash : GameObject
     {
-        public Cash(char icon, ConsoleColor color) : base(icon, color)
+        public override char Icon { get; set; } = '$';
+        public override ConsoleColor Color { get; set; } = ConsoleColor.DarkGreen;
+        public override void Process(Player player)
         {
+            player.Score += 10;
+            player.Cash++;
         }
     }
 }

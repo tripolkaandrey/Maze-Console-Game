@@ -11,13 +11,11 @@ namespace Maze.Controllers
 {
     class GraphicalUserInterface
     {
-        private Player Player { get; }
-        private Game game { get; }
+        private readonly Game _game;
 
-        public GraphicalUserInterface(Game game,Player player)
-        { 
-            Player = player;
-            this.game = game;
+        public GraphicalUserInterface(Game game)
+        {
+            _game = game;
         }
         public void Menu()
         {
@@ -36,7 +34,7 @@ namespace Maze.Controllers
             Console.WriteLine("            Exit(Esc)");
             if (Console.ReadKey(true).Key == ConsoleKey.N)
             {
-                game.Play();
+                _game.Play();
             }
             else if (Console.ReadKey(true).Key == ConsoleKey.I)
             {
@@ -65,11 +63,10 @@ namespace Maze.Controllers
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("--------------------------------------------------------------------");
             Console.WriteLine("Press escape to return to the menu");
-            while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape)
             {
-
+                Menu();
             }
-            Menu();
 
         }
         public void ChangeRadius()
@@ -80,18 +77,17 @@ namespace Maze.Controllers
             var radius = Convert.ToByte(Console.ReadLine()); //Add validation
             if (radius > 0 && radius < 4)
             {
-                Player.ChangeRadius(radius);
+                _game.Player.ChangeRadius(radius);
                 Console.WriteLine("Press escape to return to the menu");
             }
             else
             {
                 Console.WriteLine("Incorrect input");
             }
-            while (Console.ReadKey(true).Key != ConsoleKey.Escape)
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape)
             {
-                
+                Menu();
             }
-            Menu();
         }
         public void PlayerInfo()
         {
@@ -100,17 +96,17 @@ namespace Maze.Controllers
             Console.Write("Cash:    |   Lives:     |   Score: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.SetCursorPosition(6, 0);
-            Console.Write("${0}", Player.Cash);
+            Console.Write("${0}", _game.Player.Cash);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(20, 0);
-            Console.Write("H{0}", Player.Health);
+            Console.Write("H{0}", _game.Player.Health);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(34, 0);
-            Console.Write("{0}XP", Player.Score);
+            Console.Write("{0}XP", _game.Player.Score);
             Console.SetCursorPosition(48, 0);
-            Console.Write("{0}s", game.Timer.GetTime());
+            Console.Write("{0}s", _game.Timer.Time);
         }
-        public void GameOver(bool victory)
+        public void GameOver(bool victory = false)
         {
 
             Console.Clear();
@@ -133,13 +129,12 @@ namespace Maze.Controllers
                 Console.WriteLine("##████#█##█#█#####█#████###████##███##████#█#██##");
                 Console.WriteLine("#################################################");
             }
-            Console.WriteLine("Your score: {0}", Player.Score);
-            Console.WriteLine("Your time: {0}s", game.Timer.GetTime());
+            Console.WriteLine("Your score: {0}", _game.Player.Score);
+            Console.WriteLine("Your time: {0}s", _game.Timer.Time);
+            _game.Player.Reset();
             Console.WriteLine("Press enter to open menu");
             Console.ReadKey(true);
-            Player.MapNo = 1;
-            Player.Score = 0;
-            Player.Health = 1;
+
             Menu();
         }
 

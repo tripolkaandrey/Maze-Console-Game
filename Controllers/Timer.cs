@@ -9,24 +9,24 @@ namespace Maze.Controllers
 {
     class Timer
     {
-        private int _time;
-        public State State { get; set; }
+        public int Time { get; private set; }
+        //public State State { get; set; }
 
         public Timer()
         {
-            _time = 0;
-            State = new State();
+            Time = 0;
+            //State = new State();
         }
         public void Start()
         {
-            _time = 0;
-            while (State.IsAlive)
+            Time = 0;
+            //while (State.IsAlive)
+            while(true)
             {
-                _time++;
+                Time++;
                 Thread.Sleep(1000);
             }
         }
 
-        public int GetTime() => _time;
     }
 }
