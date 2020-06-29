@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,11 +46,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\Game.cs" />
+    <Compile Include="HelperClasses\GameInfo.cs" />
+    <Compile Include="HelperClasses\GetRadiusResult.cs" />
+    <Compile Include="Controllers\Map.cs" />
+    <Compile Include="HelperClasses\State.cs" />
+    <Compile Include="HelperClasses\Timer.cs" />
+    <Compile Include="Controllers\GraphicalUserInterface.cs" />
+    <Compile Include="Models\Cash.cs" />
+    <Compile Include="Models\EmptyCell.cs" />
+    <Compile Include="Models\Exit.cs" />
+    <Compile Include="Models\GameObject.cs" />
+    <Compile Include="Models\Life.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Trap.cs" />
+    <Compile Include="Models\Wall.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="GameInfo.json" />
+    <None Include="maps\map1.map" />
+    <None Include="maps\map2.map" />
+    <None Include="maps\map7.map" />
+    <None Include="maps\map6.map" />
+    <None Include="maps\map5.map" />
+    <None Include="maps\map4.map" />
+    <None Include="maps\map3.map" />
+    <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
